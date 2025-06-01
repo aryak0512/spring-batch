@@ -32,7 +32,7 @@ public class SampleJob {
     }
 
     @Bean
-    public Job myJob() {
+    public Job firstJob() {
         return new JobBuilder("My first Job", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(step1())
