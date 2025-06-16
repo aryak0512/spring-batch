@@ -19,16 +19,15 @@ public class ClientStepBuilder {
     private final JobRepository jobRepository;
     private final GenericMapReaderFactory readerFactory;
     private final PlatformTransactionManager transactionManager;
+    private final GenericProcessor processor;
+    private final GenericWriter writer;
 
     public Step buildStep(ClientConfig config) {
         return new StepBuilder("step-" + config.clientId(), jobRepository)
-                .<Map<String, String>, Map<String, String>>chunk(config.chunkSize(), transactionManager)
+                .<Map<String, String>, OutputRecord>chunk(config.chunkSize(), transactionManager)
                 .reader(readerFactory.getOrCreateReader(config))
-                .writer(items -> {
-                    for (Map<String, String> item : items) {
-                        log.info("Hi : {}", item);
-                    }
-                })
+                .processor(processor)
+                .writer(writer)
                 .build();
     }
 }

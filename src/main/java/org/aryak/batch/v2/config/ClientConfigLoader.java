@@ -24,7 +24,7 @@ public class ClientConfigLoader {
     @PostConstruct
     public void load() {
 
-        log.info("Post construct called - loading job metadata for all brokers");
+        log.info("Post construct called - loading job metadata for all brokers!");
         Util.getClientConfigs().parallelStream().forEach(c -> {
             // process each client and load its metadata
             brokerMetadata.addOrUpdateClientConfig(c);

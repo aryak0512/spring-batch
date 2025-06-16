@@ -6,11 +6,6 @@ import java.util.List;
 
 public class Util {
 
-    public static ClientConfig getDummyClientConfig() {
-        var csvFields = List.of("name", "first_name", "last_name", "city");
-        return new ClientConfig("c1", "/dev/null", ":", csvFields, 1, 3);
-    }
-
     public static List<ClientConfig> getClientConfigs() {
 
         var client1 = new ClientConfig(
