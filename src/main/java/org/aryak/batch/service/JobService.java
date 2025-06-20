@@ -1,12 +1,10 @@
 package org.aryak.batch.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.JobOperator;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -14,35 +12,11 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class JobService {
 
-    private final JobLauncher jobLauncher; // to launch job
     private final JobOperator jobOperator; // to stop the running job
-    private final Job firstJob;
-    private final Job chunkedJob;
-
-    public JobService(JobLauncher jobLauncher, JobOperator jobOperator, Job firstJob, Job chunkedJob) {
-        this.jobLauncher = jobLauncher;
-        this.jobOperator = jobOperator;
-        this.firstJob = firstJob;
-        this.chunkedJob = chunkedJob;
-    }
-
-    @Async
-    public void launch(String jobName) {
-
-        try {
-            Job job = getJob(jobName);
-            jobLauncher.run(job, getJobParams());
-        } catch (Exception e) {
-            log.error("Exception occurred while executing job : {}", jobName, e);
-        }
-    }
-
-    private Job getJob(String jobName) {
-        return jobName.equals("chunked") ? firstJob : chunkedJob;
-    }
-
+    
     /**
      * e.g. pass key = abc and value = timestamp
      * Need to explore this more!!

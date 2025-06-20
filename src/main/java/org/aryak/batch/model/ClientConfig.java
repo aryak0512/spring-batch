@@ -1,14 +1,29 @@
 package org.aryak.batch.model;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-// job could also be added here?
-public record ClientConfig(
-        String clientId,
-        String filePath,
-        String delimiter,
-        List<String> columnNames,
-        int linesToSkip,
-        int chunkSize
-) {
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * The client master table definition, metadata structure with some sensible defaults
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ClientConfig {
+
+    private Long id;
+    private String clientName;
+    private String clientId = UUID.randomUUID().toString();
+    private String filePath;
+    private String delimiter = ",";
+    private List<String> columnNames;
+    private int linesToSkip = 1;
+    private int chunkSize = 10;
+    private int maxRetries = 1;
+    private int skipLimit = 25;
 }
+

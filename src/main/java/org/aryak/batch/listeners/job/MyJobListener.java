@@ -27,6 +27,5 @@ public class MyJobListener implements JobExecutionListener {
         } else if (jobExecution.getStatus() == BatchStatus.FAILED) {
             log.error("Failed run for jobId : {}", jobId);
         }
-
     }
 }
