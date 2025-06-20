@@ -6,6 +6,7 @@ import org.aryak.batch.archival.model.OutputRecord;
 import org.aryak.batch.model.Client;
 import org.aryak.batch.processors.GenericProcessor;
 import org.aryak.batch.readers.GenericMapReaderFactory;
+import org.aryak.batch.utils.Util;
 import org.aryak.batch.writers.GenericWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
@@ -28,6 +29,7 @@ public class ClientStepBuilder {
     private final PlatformTransactionManager transactionManager;
     private final GenericProcessor processor;
     private final GenericWriter writer;
+    private final Util util;
 
     /**
      * The step related configs. Ideally I think skip count must be dynamic e.g. 25% of the file data
@@ -46,7 +48,7 @@ public class ClientStepBuilder {
                 .faultTolerant()
                 .skip(Exception.class)
                 .skip(NullPointerException.class)
-                .skipLimit(config.getSkipLimit())
+                .skipLimit(util.computeSkipLimit(config))
                 .retry(Exception.class)
                 .retryLimit(config.getMaxRetries())
                 .build();

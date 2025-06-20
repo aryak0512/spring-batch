@@ -1,9 +1,15 @@
 package org.aryak.batch.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aryak.batch.model.Client;
+import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
 
+@Component
+@Slf4j
 public class Util {
 
     public static List<Client> getClientConfigs() {
@@ -40,5 +46,21 @@ public class Util {
         config.setFilePath("/Users/aryak/Downloads/batch-processor/MOCK_DATA_student.csv");
         config.setColumnNames(List.of("id", "Name", "Email id"));
         return config;
+    }
+
+    public int computeSkipLimit(Client client) {
+        int lines = getLinesFromFile(client.getFilePath());
+        if (lines > 0)
+            return (int) ((client.getSkipLimit() / 100.0) * lines);
+        return client.getSkipLimit();
+    }
+
+    public int getLinesFromFile(String pathOfFile) {
+        try {
+            return (int) Files.lines(new File(pathOfFile).toPath()).count();
+        } catch (Exception e) {
+            log.error("Exception occurred : ", e);
+            return 0;
+        }
     }
 }
