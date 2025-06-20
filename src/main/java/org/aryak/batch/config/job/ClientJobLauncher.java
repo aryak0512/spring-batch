@@ -31,8 +31,7 @@ public class ClientJobLauncher {
             JobExecution execution = jobLauncher.run(job, parameters);
             ExecutionContext executionContext = execution.getExecutionContext();
             System.out.println(executionContext.toMap());
-
-
+            
         } catch (Exception e) {
             throw new RuntimeException("Failed to run job for client " + clientId, e);
         }
