@@ -3,6 +3,7 @@ package org.aryak.batch.v2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aryak.batch.model.ClientConfig;
+import org.aryak.batch.model.OutputRecord;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;

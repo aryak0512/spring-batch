@@ -1,5 +1,6 @@
 package org.aryak.batch.v2;
 
+import org.aryak.batch.model.OutputRecord;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
