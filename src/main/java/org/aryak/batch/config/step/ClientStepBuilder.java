@@ -3,7 +3,7 @@ package org.aryak.batch.config.step;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aryak.batch.archival.model.OutputRecord;
-import org.aryak.batch.model.ClientConfig;
+import org.aryak.batch.model.Client;
 import org.aryak.batch.processors.GenericProcessor;
 import org.aryak.batch.readers.GenericMapReaderFactory;
 import org.aryak.batch.writers.GenericWriter;
@@ -35,7 +35,7 @@ public class ClientStepBuilder {
      * @param config the client master configuration
      * @return the step object
      */
-    public Step buildStep(ClientConfig config) {
+    public Step buildStep(Client config) {
 
         String stepName = "step-" + config.getClientId();
         return new StepBuilder(stepName, jobRepository)

@@ -1,14 +1,14 @@
 package org.aryak.batch.utils;
 
-import org.aryak.batch.model.ClientConfig;
+import org.aryak.batch.model.Client;
 
 import java.util.List;
 
 public class Util {
 
-    public static List<ClientConfig> getClientConfigs() {
+    public static List<Client> getClientConfigs() {
 
-        var client1 = new ClientConfig(
+        var client1 = new Client(
                 1L,
                 "Client 1",
                 "c1",
@@ -20,7 +20,7 @@ public class Util {
                 2,
                 2
         );
-        var client2 = new ClientConfig(
+        var client2 = new Client(
                 2L,
                 "Client 2",
                 "c2",
@@ -35,8 +35,8 @@ public class Util {
         return List.of(client1, client2);
     }
 
-    public static ClientConfig getTestClient() {
-        ClientConfig config = new ClientConfig();
+    public static Client getTestClient() {
+        Client config = new Client();
         config.setFilePath("/Users/aryak/Downloads/batch-processor/MOCK_DATA_student.csv");
         config.setColumnNames(List.of("id", "Name", "Email id"));
         return config;

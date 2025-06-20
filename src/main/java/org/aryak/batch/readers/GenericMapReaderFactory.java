@@ -1,7 +1,7 @@
 package org.aryak.batch.readers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.aryak.batch.model.ClientConfig;
+import org.aryak.batch.model.Client;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -18,11 +18,11 @@ public class GenericMapReaderFactory {
 
     private final Map<String, FlatFileItemReader<Map<String, String>>> readerCache = new ConcurrentHashMap<>();
 
-    public FlatFileItemReader<Map<String, String>> getOrCreateReader(ClientConfig config) {
+    public FlatFileItemReader<Map<String, String>> getOrCreateReader(Client config) {
         return readerCache.computeIfAbsent(config.getClientId(), id -> createReader(config));
     }
 
-    private FlatFileItemReader<Map<String, String>> createReader(ClientConfig config) {
+    private FlatFileItemReader<Map<String, String>> createReader(Client config) {
 
         FlatFileItemReader<Map<String, String>> reader = new FlatFileItemReader<>();
         reader.setResource(new FileSystemResource(config.getFilePath()));
