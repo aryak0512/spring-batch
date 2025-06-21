@@ -2,39 +2,33 @@ package org.aryak.batch.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aryak.batch.config.BrokerMetadata;
-import org.aryak.batch.config.job.ClientJobBuilder;
 import org.aryak.batch.config.job.ClientJobLauncher;
 import org.aryak.batch.model.Client;
+import org.aryak.batch.service.ClientService;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("/clients")
+@RequestMapping("/client")
 public class ClientController {
 
     private final ClientJobLauncher launcher;
-    private final ClientJobBuilder jobBuilder;
-    private final BrokerMetadata brokerMetadata;
+    private final ClientService clientService;
 
-    @PostMapping("/run")
-    public String runClientJob(@RequestBody Client config) {
-        return "Job launched for client: " + config.getClientId();
+    @PostMapping(value = "/save")
+    public void addClient(@RequestBody Client config) {
+        clientService.addClient(config);
     }
 
-    @GetMapping
-    public void willChangeToPostLater() {
-
-        Client client3 = null;
-        brokerMetadata.addOrUpdateClientConfig(client3);
-        brokerMetadata.addOrUpdateClientJob(client3.getClientId(), jobBuilder.buildJob(client3));
-        launcher.runJob(client3.getClientId());
-    }
-
-    @GetMapping(value = "/{clientId}")
-    public void triggerJobByClientId(@PathVariable String clientId) {
+    @GetMapping(value = "/run/{clientId}")
+    public void triggerJobByClientId(@PathVariable Long clientId) {
         log.info("Running job for client ID : {}", clientId);
         launcher.runJob(clientId);
+    }
+
+    @GetMapping(value = "/{id}")
+    public Client triggerJobByClientId(@PathVariable long id) {
+        return clientService.getById(id);
     }
 }

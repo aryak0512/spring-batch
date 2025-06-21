@@ -15,10 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class BrokerMetadata {
 
-    private final Map<String, Job> clientJobs = new ConcurrentHashMap<>();
-    private final Map<String, Client> clientConfigs = new ConcurrentHashMap<>();
+    private final Map<Long, Job> clientJobs = new ConcurrentHashMap<>();
+    private final Map<Long, Client> clientConfigs = new ConcurrentHashMap<>();
 
-    public Job getClientJob(String clientId) {
+    public Job getClientJob(Long clientId) {
 
         if (clientJobs.containsKey(clientId)) {
             return clientJobs.get(clientId);
@@ -27,7 +27,7 @@ public class BrokerMetadata {
         throw new RuntimeException("Yet to be implemented");
     }
 
-    public Client getClientConfig(String clientId) {
+    public Client getClientConfig(Long clientId) {
 
         if (clientConfigs.containsKey(clientId)) {
             return clientConfigs.get(clientId);
@@ -35,11 +35,11 @@ public class BrokerMetadata {
         throw new RuntimeException("Yet to be implemented");
     }
 
-    public void addOrUpdateClientJob(String clientId, Job job) {
+    public void addOrUpdateClientJob(Long clientId, Job job) {
         clientJobs.put(clientId, job);
     }
 
     public void addOrUpdateClientConfig(Client client) {
-        clientConfigs.put(client.getClientId(), client);
+        clientConfigs.put(client.getId(), client);
     }
 }

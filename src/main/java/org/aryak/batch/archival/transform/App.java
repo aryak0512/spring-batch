@@ -6,7 +6,7 @@ import org.aryak.batch.archival.transform.engine.MappingEngine;
 import org.aryak.batch.archival.transform.engine.MappingRule;
 import org.aryak.batch.archival.transform.impl.ConditionalReplaceTransform;
 import org.aryak.batch.archival.transform.impl.DateFormatTransform;
-import org.aryak.batch.archival.transform.utils.CustomUtil;
+import org.aryak.batch.archival.transform.utils.JooqUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +16,11 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         OutputRecord outputRecord = new OutputRecord();
-        CustomUtil.setNestedProperty(outputRecord, "nested1.a", "42");
+        JooqUtil.setNestedProperty(outputRecord, "nested1.a", "42");
 
-        CustomUtil.setNestedProperty(outputRecord, "val1", "243434255");
+        JooqUtil.setNestedProperty(outputRecord, "val1", "243434255");
 
-        System.out.println(CustomUtil.getNestedProperty(outputRecord,
+        System.out.println(JooqUtil.getNestedProperty(outputRecord,
                 "nested1.a"
         ));
         System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(outputRecord));

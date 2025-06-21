@@ -2,7 +2,11 @@ package org.aryak.batch.archival.transform.utils;
 
 import org.joor.Reflect;
 
-public class CustomUtil {
+public class JooqUtil {
+
+    private JooqUtil() {
+    }
+
     public static void setNestedProperty(Object root, String path, String value) throws NoSuchFieldException {
         String[] parts = path.split("\\.");
         Object current = root;

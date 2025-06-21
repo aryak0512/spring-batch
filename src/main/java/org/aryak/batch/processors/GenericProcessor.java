@@ -1,6 +1,7 @@
 package org.aryak.batch.processors;
 
 import org.aryak.batch.archival.model.OutputRecord;
+import org.aryak.batch.archival.transform.utils.JooqUtil;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,8 @@ public class GenericProcessor implements ItemProcessor<Map<String, String>, Outp
         // mapping logic to output record, apply transformations here
         OutputRecord outputRecord = new OutputRecord();
 
-        outputRecord.setVal1("jsh783wued");
+        // populate the target object
+        JooqUtil.setNestedProperty(outputRecord, "x.y.z", item.get("k1"));
 
         return outputRecord;
     }
