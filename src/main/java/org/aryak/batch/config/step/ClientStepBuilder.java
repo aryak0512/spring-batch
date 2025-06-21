@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aryak.batch.archival.model.OutputRecord;
 import org.aryak.batch.model.Client;
+import org.aryak.batch.preprocessors.MyPreProcessor;
 import org.aryak.batch.processors.GenericProcessor;
 import org.aryak.batch.readers.GenericMapReaderFactory;
 import org.aryak.batch.utils.Util;
@@ -11,9 +12,13 @@ import org.aryak.batch.writers.GenericWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +48,7 @@ public class ClientStepBuilder {
         return new StepBuilder(stepName, jobRepository)
                 .<Map<String, String>, OutputRecord>chunk(config.getChunkSize(), transactionManager)
                 .reader(readerFactory.getOrCreateReader(config))
-                .processor(processor)
+                .processor(compositeProcessor())
                 .writer(writer)
                 .faultTolerant()
                 .skip(Exception.class)
@@ -52,6 +57,22 @@ public class ClientStepBuilder {
                 .retry(Exception.class)
                 .retryLimit(config.getMaxRetries())
                 .build();
+    }
+
+    /**
+     * creating a chain of processors
+     *
+     * @return the chained item processor
+     */
+    public ItemProcessor<Map<String, String>, OutputRecord> compositeProcessor() {
+        CompositeItemProcessor<Map<String, String>, OutputRecord> processor = new CompositeItemProcessor<>();
+
+        // declare processors in specific order for execution
+        List<ItemProcessor<Map<String, String>, OutputRecord>> delegates = new ArrayList<>();
+        delegates.add(new MyPreProcessor());
+        delegates.add(processor);
+        processor.setDelegates(delegates);
+        return processor;
     }
 }
 
