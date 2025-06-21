@@ -3,6 +3,7 @@ package org.aryak.batch.config;
 import lombok.Getter;
 import org.aryak.batch.exceptions.NoSuchClientException;
 import org.aryak.batch.model.Client;
+import org.aryak.batch.model.CsvMapping;
 import org.springframework.batch.core.Job;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +19,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Getter
 @Component
-public class BrokerMetadata {
+public class ClientMetadata {
 
     /* holds client and its job instances */
     private final Map<Long, Job> clientJobs = new ConcurrentHashMap<>();
 
     /* holds client and its reader config */
     private final Map<Long, Client> clientConfigs = new ConcurrentHashMap<>();
+
+    /* holds client and its mapping config */
+    private final Map<Long, CsvMapping> clientMappings = new ConcurrentHashMap<>();
 
     private <K, V> V get(K key, Map<K, V> map) {
         if (map.containsKey(key)) {
@@ -47,11 +51,19 @@ public class BrokerMetadata {
         return get(clientId, clientConfigs);
     }
 
+    public CsvMapping getClientMapping(Long clientId) {
+        return get(clientId, clientMappings);
+    }
+
     public void addOrUpdateClientJob(Long clientId, Job job) {
         put(clientId, job, clientJobs);
     }
 
     public void addOrUpdateClientConfig(long clientId, Client client) {
         put(clientId, client, clientConfigs);
+    }
+
+    public void addOrUpdateClientMapping(long clientId, CsvMapping mapping) {
+        put(clientId, mapping, clientMappings);
     }
 }

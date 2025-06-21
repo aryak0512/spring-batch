@@ -17,19 +17,28 @@ import org.springframework.stereotype.Component;
 public class ClientConfigLoader {
 
     private final ClientJobBuilder jobBuilder;
-    private final BrokerMetadata brokerMetadata;
+    private final ClientMetadata clientMetadata;
     private final ClientService clientService;
 
     @PostConstruct
     public void load() {
+        
         // process each client and load its metadata
-        clientService.fetchAll().parallelStream().forEach(c -> {
-            brokerMetadata.addOrUpdateClientConfig(c.getId(), c);
-            brokerMetadata.addOrUpdateClientJob(c.getId(), jobBuilder.buildJob(c));
-        });
+        clientService.fetchAll()
+                .parallelStream()
+                .forEach(c -> {
 
-        log.info("Job map : {}", brokerMetadata.getClientJobs().size());
-        log.info("Config map : {}", brokerMetadata.getClientConfigs().size());
+                    if (c.isEnabled()) {
+                        clientMetadata.addOrUpdateClientConfig(c.getId(), c);
+                        clientMetadata.addOrUpdateClientJob(c.getId(), jobBuilder.buildJob(c));
+                    } else {
+                        log.info("Client id : {} is not enabled. Will not load its metadata.", c.getId());
+                    }
+
+                });
+
+        log.info("Job map : {}", clientMetadata.getClientJobs().size());
+        log.info("Config map : {}", clientMetadata.getClientConfigs().size());
     }
 
 }

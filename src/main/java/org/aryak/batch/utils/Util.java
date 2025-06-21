@@ -24,7 +24,8 @@ public class Util {
                 1,
                 3,
                 2,
-                2
+                2,
+                true
         );
         var client2 = new Client(
                 2L,
@@ -36,7 +37,7 @@ public class Util {
                 1,
                 3,
                 2,
-                2);
+                2, true);
 
         return List.of(client1, client2);
     }
@@ -50,8 +51,12 @@ public class Util {
 
     public int computeSkipLimit(Client client) {
         int lines = getLinesFromFile(client.getFilePath());
-        if (lines > 0)
-            return (int) ((client.getSkipLimit() / 100.0) * lines);
+        if (lines > 0) {
+            int limit = (int) ((client.getSkipLimit() / 100.0) * lines);
+            log.info("Client : {} Skip limit  : {} Lines : {}", client.getId(), limit, lines);
+            return limit;
+        }
+
         return client.getSkipLimit();
     }
 

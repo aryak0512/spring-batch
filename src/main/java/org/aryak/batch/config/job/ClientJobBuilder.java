@@ -20,7 +20,7 @@ public class ClientJobBuilder {
     private final JobRepository jobRepository;
 
     public Job buildJob(Client config) {
-        String jobName = "job-" + config.getClientId();
+        String jobName = "job-" + config.getId();
         return new JobBuilder(jobName, jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(stepBuilder.buildStep(config))

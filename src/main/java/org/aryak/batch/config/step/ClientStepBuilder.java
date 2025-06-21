@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aryak.batch.archival.model.OutputRecord;
 import org.aryak.batch.model.Client;
+import org.aryak.batch.model.InputRecord;
 import org.aryak.batch.preprocessors.MyPreProcessor;
 import org.aryak.batch.processors.GenericProcessor;
 import org.aryak.batch.readers.GenericMapReaderFactory;
@@ -19,7 +20,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Bean that defines the steps of the job
@@ -44,9 +44,9 @@ public class ClientStepBuilder {
      */
     public Step buildStep(Client config) {
 
-        String stepName = "step-" + config.getClientId();
+        String stepName = "step-" + config.getId();
         return new StepBuilder(stepName, jobRepository)
-                .<Map<String, String>, OutputRecord>chunk(config.getChunkSize(), transactionManager)
+                .<InputRecord, OutputRecord>chunk(config.getChunkSize(), transactionManager)
                 .reader(readerFactory.getOrCreateReader(config))
                 .processor(compositeProcessor())
                 .writer(writer)
@@ -64,15 +64,17 @@ public class ClientStepBuilder {
      *
      * @return the chained item processor
      */
-    public ItemProcessor<Map<String, String>, OutputRecord> compositeProcessor() {
-        CompositeItemProcessor<Map<String, String>, OutputRecord> processor = new CompositeItemProcessor<>();
+    public ItemProcessor<InputRecord, OutputRecord> compositeProcessor() {
+
+        CompositeItemProcessor<InputRecord, OutputRecord> compositeItemProcessor = new CompositeItemProcessor<>();
 
         // declare processors in specific order for execution
-        List<ItemProcessor<Map<String, String>, OutputRecord>> delegates = new ArrayList<>();
+        List<ItemProcessor<?, ?>> delegates = new ArrayList<>();
         delegates.add(new MyPreProcessor());
-        delegates.add(processor);
-        processor.setDelegates(delegates);
-        return processor;
+        delegates.add(this.processor);
+        
+        compositeItemProcessor.setDelegates(delegates);
+        return compositeItemProcessor;
     }
 }
 

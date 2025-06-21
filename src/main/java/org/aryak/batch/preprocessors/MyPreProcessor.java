@@ -1,22 +1,23 @@
 package org.aryak.batch.preprocessors;
 
-import org.aryak.batch.archival.model.OutputRecord;
+import lombok.extern.slf4j.Slf4j;
+import org.aryak.batch.model.InputRecord;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
+@Slf4j
 @Component
-public class MyPreProcessor implements ItemProcessor<Map<String, String>, OutputRecord> {
-    
+public class MyPreProcessor implements ItemProcessor<InputRecord, InputRecord> {
+
     @Override
-    public OutputRecord process(Map<String, String> item) throws Exception {
+    public InputRecord process(InputRecord item) throws Exception {
 
         if (1 == 2) {
             // filtered!!
             return null;
         }
 
-        return new OutputRecord();
+        log.info("Pre processor received record : {}", item);
+        return item;
     }
 }
