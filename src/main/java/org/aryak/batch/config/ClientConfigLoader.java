@@ -27,7 +27,7 @@ public class ClientConfigLoader {
         // process each client and load its metadata
         clientService.fetchAll().parallelStream().forEach(c -> {
             brokerMetadata.addOrUpdateClientConfig(c);
-            brokerMetadata.addOrUpdateClientJob(c.getClientId(), jobBuilder.buildJob(c));
+            brokerMetadata.addOrUpdateClientJob(c.getId(), jobBuilder.buildJob(c));
         });
 
         log.info("Job map : {}", brokerMetadata.getClientJobs().size());
