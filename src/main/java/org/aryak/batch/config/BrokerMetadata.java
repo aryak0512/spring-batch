@@ -1,6 +1,7 @@
 package org.aryak.batch.config;
 
 import lombok.Getter;
+import org.aryak.batch.exceptions.NoSuchClientException;
 import org.aryak.batch.model.Client;
 import org.springframework.batch.core.Job;
 import org.springframework.stereotype.Component;
@@ -9,37 +10,48 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Bean that maintains all clients' metadata and job definitions
+ * Bean that maintains all clients' metadata and job definitions.
+ * The members of this metadata must not be exposed to other threads.
+ * <p>
+ * Mutation must only be permitted via <code>addOrUpdateClientJob</code>
+ * and <code>addOrUpdateClientConfig</code> methods
  */
 @Getter
 @Component
 public class BrokerMetadata {
 
+    /* holds client and its job instances */
     private final Map<Long, Job> clientJobs = new ConcurrentHashMap<>();
+
+    /* holds client and its reader config */
     private final Map<Long, Client> clientConfigs = new ConcurrentHashMap<>();
 
-    public Job getClientJob(Long clientId) {
-
-        if (clientJobs.containsKey(clientId)) {
-            return clientJobs.get(clientId);
+    private <K, V> V get(K key, Map<K, V> map) {
+        if (map.containsKey(key)) {
+            return map.get(key);
         }
+        throw new NoSuchClientException((Long) key);
+    }
 
-        throw new RuntimeException("Yet to be implemented");
+    private <K, V> void put(K key, V value, Map<K, V> map) {
+        map.put(key, value);
+    }
+
+    // methods accessible to outer world begin
+
+    public Job getClientJob(Long clientId) {
+        return get(clientId, clientJobs);
     }
 
     public Client getClientConfig(Long clientId) {
-
-        if (clientConfigs.containsKey(clientId)) {
-            return clientConfigs.get(clientId);
-        }
-        throw new RuntimeException("Yet to be implemented");
+        return get(clientId, clientConfigs);
     }
 
     public void addOrUpdateClientJob(Long clientId, Job job) {
-        clientJobs.put(clientId, job);
+        put(clientId, job, clientJobs);
     }
 
-    public void addOrUpdateClientConfig(Client client) {
-        clientConfigs.put(client.getId(), client);
+    public void addOrUpdateClientConfig(long clientId, Client client) {
+        put(clientId, client, clientConfigs);
     }
 }

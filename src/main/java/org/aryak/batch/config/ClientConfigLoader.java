@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aryak.batch.config.job.ClientJobBuilder;
-import org.aryak.batch.config.job.ClientJobLauncher;
 import org.aryak.batch.service.ClientService;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class ClientConfigLoader {
 
     private final ClientJobBuilder jobBuilder;
-    private final ClientJobLauncher jobLauncher;
     private final BrokerMetadata brokerMetadata;
     private final ClientService clientService;
 
@@ -26,7 +24,7 @@ public class ClientConfigLoader {
     public void load() {
         // process each client and load its metadata
         clientService.fetchAll().parallelStream().forEach(c -> {
-            brokerMetadata.addOrUpdateClientConfig(c);
+            brokerMetadata.addOrUpdateClientConfig(c.getId(), c);
             brokerMetadata.addOrUpdateClientJob(c.getId(), jobBuilder.buildJob(c));
         });
 
